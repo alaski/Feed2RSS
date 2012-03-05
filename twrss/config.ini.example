@@ -1,0 +1,6 @@
+SQLALCHEMY_DATABASE_URI = 'sqlite:///twrss.db'
+DEBUG = True
+SECRET_KEY = ''
+
+TWCONSUMER_KEY = ''
+TWCONSUMER_SECRET = ''
