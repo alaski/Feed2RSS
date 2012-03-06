@@ -6,7 +6,7 @@ from flask import url_for
 from flaskext.oauth import OAuth
 import PyRSS2Gen
 import tweepy
-from twss import app
+from twrss import app
 
 import datetime
 import re
