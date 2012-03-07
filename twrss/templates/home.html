@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+{% if logged_in %}
+	<a href="{{ url_for('logout') }}">Log Out</a>
+	<a href="{{ url_for('index') }}">Feed</a>
+{% else %}
+	<a href="{{ url_for('twitter_login') }}">
+		<img src="{{ url_for('static', filename='sign-in-with-twitter-l.png') }}" />
+	</a>
+{% endif %}
+
+{% endblock %}
