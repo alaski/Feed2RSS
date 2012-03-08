@@ -1,20 +1,25 @@
 import datetime
-from flaskext.login import UserMixin
+from flaskext import login
 from flaskext.sqlalchemy import SQLAlchemy
 from twrss import app
 
 db = SQLAlchemy(app)
 
-class User(db.Model, UserMixin):
+class User(db.Model, login.UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     screen_name = db.Column(db.String(255), unique=True)
     user_id = db.Column(db.Integer, unique=True)
     oauth_token = db.Column(db.String(255))
     oauth_token_secret = db.Column(db.String(255))
-    created = db.Column(db.DateTime, default=datetime.datetime.now)
+    signup_date = db.Column(db.DateTime, default=datetime.datetime.now)
 
-    def __init__(self, screen_name, user_id, oauth_token, oauth_token_secret):
+    def __init__(self, 
+                 screen_name = '',
+                 user_id = -1,
+                 oauth_token = '',
+                 oauth_token_secret = ''
+                 ):
         self.screen_name = screen_name
         self.user_id = user_id
         self.oauth_token = oauth_token
