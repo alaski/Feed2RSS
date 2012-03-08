@@ -122,11 +122,16 @@ def logout():
 
 @app.route('/')
 def home():
-    user = current_user
-    logged_in = False
-    if user.is_authenticated():
-        logged_in = True
-    return render_template('home.html', logged_in = logged_in)
+    if current_user.is_anonymous():
+        user = models.User()
+    else:
+        user = current_user
+
+    return render_template(
+            'home.html',
+            logged_in = current_user.is_authenticated(),
+            user = user
+            )
 
 
 # vim:et:ts=4:sw=4:sts=4
