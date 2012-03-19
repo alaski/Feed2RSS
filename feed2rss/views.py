@@ -1,7 +1,6 @@
 from flask import flash
 from flask import redirect
 from flask import render_template
-from flask import request
 from flask import url_for
 from flaskext.login import current_user
 from flaskext.login import login_required
@@ -9,8 +8,14 @@ from flaskext.login import login_user
 from flaskext.login import logout_user
 from flaskext.login import LoginManager
 from flaskext.oauth import OAuth
+import PyRSS2Gen
+import tweepy
+
 from feed2rss import app
 from feed2rss import models
+
+import datetime
+import re
 
 
 oauth = OAuth()
@@ -48,10 +53,9 @@ def twitter_login():
 @app.route('/authenticated')
 @twitter.authorized_handler
 def twitter_authenticated(resp):
-    next_url = request.args.get('next') or url_for('home')
     if resp is None:
         flash(u'You denied the request to sign in.')
-        return redirect(next_url)
+        return redirect(url_for('home'))
 
     user = models.User.query.filter_by(screen_name=resp['screen_name']).first()
     if user is None:
@@ -72,7 +76,7 @@ def twitter_authenticated(resp):
     models.db.session.commit()
 
     login_user(user, remember=True)
-    return redirect(next_url)
+    return redirect(url_for('user_home', user=user.screen_name))
 
 @app.route('/logout')
 @login_required
@@ -92,6 +96,41 @@ def home():
             logged_in = current_user.is_authenticated(),
             user = user
             )
+
+@app.route('/<user>')
+@login_required
+def user_home(user):
+    link_re = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    consumer_key = app.config['TWCONSUMER_KEY']
+    consumer_secret = app.config['TWCONSUMER_SECRET']
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    key = current_user.oauth_token
+    secret = current_user.oauth_token_secret
+    auth.set_access_token(key, secret)
+    api = tweepy.API(auth)
+
+    rss_items = []
+    for status in api.favorites():
+        link = link_re.search(status.text)
+        if link is not None:
+            rss_items.append(PyRSS2Gen.RSSItem(
+                title = unicode(link.group(0)).encode('utf-8'),
+                author = status.user.screen_name,
+                link = unicode(link.group(0)).encode('utf-8'),
+                description = status.text,
+                pubDate = status.created_at
+                )
+            )
+
+    rss = PyRSS2Gen.RSS2(
+            title = 'Tweets to RSS',
+            link = url_for('home'),
+            description = 'Links!',
+            lastBuildDate = datetime.datetime.now(),
+            items = rss_items
+    )
+
+    return rss.to_xml()
 
 
 # vim:et:ts=4:sw=4:sts=4

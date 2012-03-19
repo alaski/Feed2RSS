@@ -19,21 +19,6 @@ def include_cwd():
                 if item not in prev_sys_path:
                     sys.path.remove(item)
 
-@contextmanager
-def virtualenv():
-    if 'VIRTUAL_ENV' not in os.environ:
-        yield
-    else:
-        prev_sys_path = list(sys.path)
-        activate_path = os.path.join(os.environ['VIRTUAL_ENV'], 'bin/activate_this.py')
-        try:
-            execfile(activate_path, dict(__file__=activate_path))
-            yield
-        finally:
-            for item in list(sys.path):
-                if item not in prev_sys_path:
-                    sys.path.remove(item)
-
 @task
 def test():
     test_command = 'nosetests -v'
@@ -47,10 +32,9 @@ def test():
 @task
 def db_init():
     with include_cwd():
-        with virtualenv():
-            from feed2rss.models import db
-            db.drop_all()
-            db.create_all()
+        from feed2rss.models import db
+        db.drop_all()
+        db.create_all()
 
 
 # vim:et:ts=4:sw=4:sts=4
