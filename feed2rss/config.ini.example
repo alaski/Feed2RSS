@@ -1,6 +1,0 @@
-SQLALCHEMY_DATABASE_URI = 'sqlite:///feed2rss.db'
-DEBUG = True
-SECRET_KEY = ''
-
-TWCONSUMER_KEY = ''
-TWCONSUMER_SECRET = ''

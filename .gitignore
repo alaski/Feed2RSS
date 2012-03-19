@@ -1,1 +1,2 @@
-feed2rss/config.ini
+feed2rss_flask/
+feed2rss.egg-info/
