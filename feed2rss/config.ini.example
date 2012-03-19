@@ -1,4 +1,4 @@
-SQLALCHEMY_DATABASE_URI = 'sqlite:///twrss.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///feed2rss.db'
 DEBUG = True
 SECRET_KEY = ''
 

@@ -1,4 +1,4 @@
-from twrss import app
+from feed2rss import app
 import sys
 
 def main(argv=None):

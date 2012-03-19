@@ -48,7 +48,7 @@ def test():
 def db_init():
     with include_cwd():
         with virtualenv():
-            from twrss.models import db
+            from feed2rss.models import db
             db.drop_all()
             db.create_all()
 

@@ -1,7 +1,7 @@
 import datetime
 from flaskext import login
 from flaskext.sqlalchemy import SQLAlchemy
-from twrss import app
+from feed2rss import app
 
 db = SQLAlchemy(app)
 

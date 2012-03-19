@@ -9,8 +9,8 @@ from flaskext.login import login_user
 from flaskext.login import logout_user
 from flaskext.login import LoginManager
 from flaskext.oauth import OAuth
-from twrss import app
-from twrss import models
+from feed2rss import app
+from feed2rss import models
 
 
 oauth = OAuth()
