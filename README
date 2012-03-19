@@ -1,4 +1,5 @@
 Current output of 'pip freeze':
+Fabric==1.4.0
 Flask==0.8
 Flask-Login==0.1
 Flask-OAuth==0.11
@@ -9,5 +10,7 @@ SQLAlchemy==0.7.5
 Werkzeug==0.8.3
 httplib2==0.7.4
 oauth2==1.5.211
+pycrypto==2.5
+ssh==1.7.13
 tweepy==1.8
 wsgiref==0.1.2
