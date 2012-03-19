@@ -11,7 +11,7 @@ def include_cwd():
         yield
     else:
         prev_sys_path = list(sys.path)
-        sys.path.insert(0, os.getcwd())
+        sys.path.insert(0, os.path.abspath(os.getcwd()))
         try:
             yield
         finally:
