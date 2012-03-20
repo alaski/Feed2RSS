@@ -14,6 +14,7 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'tweepy',
     ]
 
 setup(name='feed2rss',

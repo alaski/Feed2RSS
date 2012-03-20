@@ -1,34 +1,63 @@
+from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from sqlalchemy.exc import DBAPIError
-
 from .models import (
     DBSession,
-    MyModel,
+    User,
     )
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
+import tweepy
+
+@view_config(route_name='twitter_login')
+def twitter_login(request):
+    settings = request.registry.settings
+    auth = tweepy.OAuthHandler(
+            settings['twconsumer_key'],
+            settings['twconsumer_secret'],
+            request.route_url('twitter_authenticated')
+            )
     try:
-        one = DBSession.query(MyModel).filter(MyModel.name=='one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one':one, 'project':'feed2rss'}
+        redirect_url = auth.get_authorization_url(signin_with_twitter=True)
+    except tweepy.TweepError, e:
+        print 'Failed to get request token: {0}'.format(e)
+    session = request.session
+    session['request_token'] = (
+            auth.request_token.key,
+            auth.request_token.secret
+            )
+    session.changed()
+    return HTTPFound(location=redirect_url)
 
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
+@view_config(route_name='twitter_authenticated')
+def twitter_authenticated(request):
+    verifier = request.GET.getone('oauth_verifier')
+    settings = request.registry.settings
+    auth = tweepy.OAuthHandler(
+            settings['twconsumer_key'],
+            settings['twconsumer_secret']
+            )
+    session = request.session
+    token = session.get('request_token')
+    if 'request_token' in session:
+        del session['request_token']
+    auth.set_request_token(token[0], token[1])
 
-1.  You may need to run the "initialize_feed2rss_db" script
-    to initialize your database tables.  Check your virtual 
-    environment's "bin" directory for this script and try to run it.
+    try:
+        auth.get_access_token(verifier)
+    except tweepy.TweepError:
+        print 'Failed to get access token'
+    
+    api = tweepy.API(auth)
+    user = api.me()
+    #oauth_token = auth.access_token.key
+    #oauth_token_secret = auth.access_token.secret
+    print user.id
+    print user.screen_name
 
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
+@view_config(route_name='home', renderer='templates/home.pt')
+def home(request):
+    return {'project': 'Feed2RSS'}
 
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
 
+# vim:et:ts=4:sw=4:sts=4
