@@ -1,2 +1,4 @@
 feed2rss_flask/
 feed2rss.egg-info/
+development.ini
+production.ini
