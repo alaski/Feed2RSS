@@ -11,7 +11,7 @@ from pyramid.paster import (
 
 from ..models import (
     DBSession,
-#    User,
+    User,
     Base,
     )
 

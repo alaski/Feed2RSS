@@ -1,5 +1,10 @@
 import datetime
 
+from pyramid.security import (
+    Allow,
+    Everyone,
+    )
+
 from sqlalchemy import (
     Column,
     DateTime,
@@ -14,6 +19,8 @@ from sqlalchemy.orm import (
     sessionmaker,
     )
 
+from sqlalchemy.orm.exc import NoResultFound
+
 from zope.sqlalchemy import ZopeTransactionExtension
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -27,6 +34,7 @@ class User(Base):
     oauth_token = Column(String(255))
     oauth_token_secret = Column(String(255))
     signup_date = Column(DateTime, default=datetime.datetime.now)
+    last_login = Column(DateTime)
 
     def __init__(self,
                  screen_name = '',
@@ -39,16 +47,30 @@ class User(Base):
         self.oauth_token = oauth_token
         self.oauth_token_secret = oauth_token_secret
 
+    @classmethod
+    def get_by_screen_name(cls, screen_name):
+        try:
+            user = DBSession.query(cls).filter_by(screen_name=screen_name).one()
+        except NoResultFound:
+            return None
+        return user
+
     def __str__(self):
         return ('<User screen_name: {screen_name} '
         'user_id: {user_id} '
         'created: {created} '
-        'oauth_token: {oauth_token}>').format(
+        'last_login: {last_login}>').format(
             screen_name = self.screen_name,
             user_id =  self.user_id,
-            created = self.created,
-            oauth_token = self.oauth_token
+            created = self.signup_date,
+            last_login = self.last_login
             )
 
+
+class RootFactory(object):
+    __acl__ = [ (Allow, Everyone, 'view') ]
+
+    def __init__(self, request):
+        pass
 
 # vim:et:ts=4:sw=4:sts=4
