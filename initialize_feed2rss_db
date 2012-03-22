@@ -1,8 +1,0 @@
-# EASY-INSTALL-ENTRY-SCRIPT: 'feed2rss==0.0','console_scripts','initialize_feed2rss_db'
-__requires__ = 'feed2rss==0.0'
-import sys
-from pkg_resources import load_entry_point
-
-sys.exit(
-   load_entry_point('feed2rss==0.0', 'console_scripts', 'initialize_feed2rss_db')()
-)
