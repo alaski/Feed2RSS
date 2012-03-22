@@ -6,6 +6,7 @@ Pygments==1.5
 SQLAlchemy==0.7.6
 WebOb==1.2b3
 ordereddict==1.1
+psycopg2==2.4.4
 pyramid==1.3b3
 pyramid-debugtoolbar==1.0
 pyramid-tm==0.3
