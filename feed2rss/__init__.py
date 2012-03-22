@@ -1,3 +1,5 @@
+import os
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -9,10 +11,14 @@ from .models import DBSession
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    settings['twconsumer_key'] = os.environ.get('TWCONSUMER_KEY')
+    settings['twconsumer_secret'] = os.environ.get('TWCONSUMER_SECRET')
+    session_secret = os.environ.get('SESSION_SECRET')
+    auth_secret = os.environ.get('AUTH_SECRET')
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
-    session_factory = UnencryptedCookieSessionFactoryConfig('topsecret')
-    authn_policy = AuthTktAuthenticationPolicy('topsecret2')
+    session_factory = UnencryptedCookieSessionFactoryConfig(session_secret)
+    authn_policy = AuthTktAuthenticationPolicy(auth_secret)
     authz_policy = ACLAuthorizationPolicy()
     config = Configurator(
             settings=settings,
