@@ -2,7 +2,7 @@ import os
 import sys
 #import transaction
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import create_engine
 
 from pyramid.paster import (
     get_appsettings,
@@ -26,8 +26,8 @@ def main(argv=sys.argv):
         usage(argv)
     config_uri = argv[1]
     setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-    engine = engine_from_config(settings, 'sqlalchemy.')
+    database_url = os.environ.get('DATABASE_URL')
+    engine = create_engine(database_url)
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     #with transaction.manager:
