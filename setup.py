@@ -18,7 +18,7 @@ requires = [
     ]
 
 setup(name='feed2rss',
-      version='0.0',
+      version='0.1',
       description='feed2rss',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[

@@ -1,4 +1,10 @@
+0.1
+---
+
+-   Can sign in through twitter OAuth
+-   Once signed in the last 10 favorited tweets are displayed
+
 0.0
 ---
 
--  Initial version
+-   Initial version
