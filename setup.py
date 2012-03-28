@@ -15,6 +15,7 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'pyramid_assetviews',
+    'pymongo',
     'PyRSS2Gen',
     'tweepy',
     ]
