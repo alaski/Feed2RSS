@@ -20,11 +20,50 @@ from sqlalchemy.orm import (
     )
 
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.schema import ForeignKey
 
 from zope.sqlalchemy import ZopeTransactionExtension
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
+
+class Feed(Base):
+    __tablename__ = 'feeds'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    name = Column(String(255))
+    source = Column(String(255))
+
+    def __init__(self,
+                 user_id,
+                 name,
+                 source
+                 ):
+        self.user_id = user_id
+        self.name = name,
+        self.source = source
+
+    @classmethod
+    def get_by_userid(cls, user_id):
+        try:
+            feeds = DBSession.query(cls).filter_by(user_id=user_id)
+        except NoResultFound:
+            return None
+        return feeds
+
+    @classmethod
+    def get_by_id_and_name(cls, user_id, name):
+        try:
+            feed = DBSession.query(cls).filter_by(user_id=user_id, name=name).one()
+        except NoResultFound:
+            return None
+        return feed
+
+    def __str__(self):
+        return ('<Feed user_id: {user_id} '
+                'name: {name} '
+                'source: {source}>').format(
+                        **self.__dict__)
 
 class User(Base):
     __tablename__ = 'users'

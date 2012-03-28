@@ -2,7 +2,10 @@ import datetime
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPForbidden,
+    HTTPNotFound,
     )
+
+from pyramid.response import Response
 
 from pyramid.security import (
     remember,
@@ -17,9 +20,11 @@ from pyramid.view import (
 
 from .models import (
     DBSession,
+    Feed,
     User,
     )
 
+import PyRSS2Gen
 import tweepy
 
 @view_config(route_name='twitter_login')
@@ -93,14 +98,79 @@ def user_home(request):
         return HTTPForbidden()
     
     user = User.get_by_screen_name(user_name)
-    settings = request.registry.settings
-    auth = tweepy.OAuthHandler(
-            settings['twconsumer_key'],
-            settings['twconsumer_secret']
+    feeds = Feed.get_by_userid(user.id)
+    feed_links = []
+    if feeds is not None:
+        for feed in feeds:
+            feed_links.append(
+                    request.route_url(
+                        'view_feed',
+                        user = user_name,
+                        feedname = feed.name,
+                        )
+                    )
+
+    return {'screen_name': user_name,
+            'feed_links': feed_links}
+
+@view_config(route_name='view_feed')
+def view_feed(request):
+    user = User.get_by_screen_name(request.matchdict['user'])
+    feed = Feed.get_by_id_and_name(user.id, request.matchdict['feedname'])
+    if feed is None:
+        return HTTPNotFound()
+
+    tweets_db = request.mongo_db.tweets
+    tweets_cursor = tweets_db.find(
+            {'rss_user': user.screen_name, 'feedname': feed.name}
             )
-    auth.set_access_token(user.oauth_token, user.oauth_token_secret)
-    api = tweepy.API(auth)
-    return {'favorites':api.favorites()}
+    rss_tweets = []
+    for tweet in tweets_cursor:
+        rss_tweets.append(
+                PyRSS2Gen.RSSItem(
+                    title = tweet['title'],
+                    author = tweet['author'],
+                    link = tweet['link'],
+                    description = tweet['description'],
+                    pubDate = tweet['pubDate'],
+                    )
+                )
+    rss = PyRSS2Gen.RSS2(
+            title = 'Feed2RSS',
+            link = request.route_url(
+                'view_feed',
+                user = request.matchdict['user'],
+                feedname = request.matchdict['feedname'],
+                ),
+            description = 'RSS feed of tweets with links',
+            lastBuildDate = datetime.datetime.now(),
+            items = rss_tweets,
+            )
+
+    return Response(rss.to_xml(), content_type='text/xml')
+
+
+@view_config(route_name='create_feed', request_method='POST')
+def create_feed(request):
+    user_name = request.matchdict['user']
+    logged_in = authenticated_userid(request)
+    if user_name != logged_in:
+        return HTTPForbidden()
+
+    form_data = request.POST
+
+    user = User.get_by_screen_name(user_name)
+    feed = Feed(user.id, form_data['name'], form_data['source'])
+    DBSession.add(feed)
+    #settings = request.registry.settings
+    #auth = tweepy.OAuthHandler(
+    #        settings['twconsumer_key'],
+    #        settings['twconsumer_secret']
+    #        )
+    #auth.set_access_token(user.oauth_token, user.oauth_token_secret)
+    #api = tweepy.API(auth)
+    #api.favorites()
+    return Response()
 
 @view_config(route_name='home', renderer='templates/home.pt')
 def home(request):

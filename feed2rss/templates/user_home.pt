@@ -14,6 +14,7 @@
   <![endif]-->
 </head>
 <body>
+    <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
   <div id="wrap">
     <div id="top">
       <div class="top align-center">
@@ -22,8 +23,15 @@
     </div>
     <div id="middle">
       <div class="middle align-center">
-          <div tal:repeat="favorite favorites">
-              <p tal:content="favorite.text">Favorite</p>
+          <div tal:repeat="feed_link feed_links">
+              <a href="${feed_link}">${feed_link}</a>
+          </div>
+          <form id="add_feed">
+              <input type="hidden" name="name" value="favorites" />
+              <input type="hidden" name="source" value="favorites" />
+              <input type="submit" value="Add Feed" />
+          </form>
+          <div class="result">
           </div>
       </div>
     </div>
@@ -31,5 +39,21 @@
   <div id="footer">
     <div class="footer">&copy; Copyright 2008-2011, Agendaless Consulting.</div>
   </div>
+  <script>
+    $('#add_feed').submit(function() {
+        $.ajax({
+            type: 'POST',
+            url: '${request.route_url("create_feed", user=screen_name)}',
+            data: {name: 'favorites', source: 'favorites'},
+            success: function(result) {
+                $('.result').html(result);
+            },
+            error: function(request, status, error) {
+                $('.result').html(request.responseText);
+            }
+        });
+        return false;
+    });
+  </script>
 </body>
 </html>
