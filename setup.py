@@ -14,6 +14,7 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'pyramid_assetviews',
     'PyRSS2Gen',
     'tweepy',
     ]
