@@ -3,44 +3,27 @@
 <head>
   <title>The Pyramid Web Application Development Framework</title>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-  <meta name="keywords" content="python web application" />
-  <meta name="description" content="pyramid web application" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
   <link rel="shortcut icon" href="${request.static_url('feed2rss:static/favicon.ico')}" />
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/pylons.css')}" type="text/css" media="screen" charset="utf-8" />
-  <link rel="stylesheet" href="http://static.pylonsproject.org/fonts/nobile/stylesheet.css" media="screen" />
-  <link rel="stylesheet" href="http://static.pylonsproject.org/fonts/neuton/stylesheet.css" media="screen" />
   <!--[if lte IE 6]>
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/ie6.css')}" type="text/css" media="screen" charset="utf-8" />
   <![endif]-->
 </head>
 <body>
     <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
-  <div id="wrap">
-    <div id="top">
-      <div class="top align-center">
-        <div><img src="${request.static_url('feed2rss:static/pyramid.png')}" width="750" height="169" alt="pyramid"/></div>
+  <div class="middle align-center">
+      <div tal:repeat="feed_link feed_links">
+          <a href="${feed_link}">${feed_link}</a>
       </div>
-    </div>
-    <div id="middle">
-      <div class="middle align-center">
-          <div tal:repeat="feed_link feed_links">
-              <a href="${feed_link}">${feed_link}</a>
-          </div>
-          <form id="add_feed">
-              <input type="hidden" name="name" value="favorites" />
-              <input type="hidden" name="source" value="favorites" />
-              <input type="submit" value="Add Feed" />
-          </form>
-          <div class="result">
-          </div>
-          <div>
-              ${de_bug}
-          </div>
+      <form id="add_feed">
+          <input type="hidden" name="name" value="favorites" />
+          <input type="hidden" name="source" value="favorites" />
+          <input type="submit" value="Add Feed" />
+      </form>
+      <div class="result">
       </div>
-    </div>
-  </div>
-  <div id="footer">
-    <div class="footer">&copy; Copyright 2008-2011, Agendaless Consulting.</div>
   </div>
   <script>
     $('#add_feed').submit(function() {
