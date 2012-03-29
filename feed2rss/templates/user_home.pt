@@ -6,24 +6,16 @@
   <meta name="keywords" content="" />
   <meta name="description" content="" />
   <link rel="shortcut icon" href="${request.static_url('feed2rss:static/favicon.ico')}" />
-  <link rel="stylesheet" href="${request.static_url('feed2rss:static/pylons.css')}" type="text/css" media="screen" charset="utf-8" />
-  <!--[if lte IE 6]>
-  <link rel="stylesheet" href="${request.static_url('feed2rss:static/ie6.css')}" type="text/css" media="screen" charset="utf-8" />
-  <![endif]-->
+  <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
     <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
   <div class="middle align-center">
-      <div tal:repeat="feed feeds">
-          <a href="${feed['url']}">${feed['type']}</a>
-      </div>
-      <div id="add-feed-form" title="Add feed">
-          <form>
-              <input type="" name="source" value="favorites" />
-          </form>
-      </div>
-      <div class="result">
-      </div>
+      <ul>
+          <li tal:repeat="feed feeds">
+            ${feed['type']}<a href="${feed.url}">RSS</a>
+          </li>
+      </ul>
   </div>
   <script>
     $('#add_feed').submit(function() {

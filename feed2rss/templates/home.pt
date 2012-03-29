@@ -6,10 +6,7 @@
   <meta name="keywords" content="" />
   <meta name="description" content="" />
   <link rel="shortcut icon" href="${request.static_url('feed2rss:static/favicon.ico')}" />
-  <link rel="stylesheet" href="${request.static_url('feed2rss:static/pylons.css')}" type="text/css" media="screen" charset="utf-8" />
-  <!--[if lte IE 6]>
-  <link rel="stylesheet" href="${request.static_url('feed2rss:static/ie6.css')}" type="text/css" media="screen" charset="utf-8" />
-  <![endif]-->
+  <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
   <div class="middle align-center">
