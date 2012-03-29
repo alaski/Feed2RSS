@@ -33,6 +33,9 @@
           </form>
           <div class="result">
           </div>
+          <div>
+              ${de_bug}
+          </div>
       </div>
     </div>
   </div>

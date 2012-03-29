@@ -111,7 +111,7 @@ def user_home(request):
                     )
 
     return {'screen_name': user_name,
-            'feed_links': feed_links}
+            'feed_links': feed_links,}
 
 @view_config(route_name='view_feed')
 def view_feed(request):
