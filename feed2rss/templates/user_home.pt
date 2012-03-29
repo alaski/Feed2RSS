@@ -9,29 +9,30 @@
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
-    <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
   <div class="middle align-center">
-      <ul>
-          <li tal:repeat="feed feeds">
-            ${feed['type']}<a href="${feed.url}">RSS</a>
-          </li>
-      </ul>
+    <ul>
+      <li tal:repeat="feed feeds">
+        ${feed['type']}<a href="${feed.url}">RSS</a>
+      </li>
+    </ul>
   </div>
   <script>
     $('#add_feed').submit(function() {
-        $.ajax({
-            type: 'POST',
-            url: '${request.route_url("create_feed", user=screen_name)}',
-            data: {name: 'favorites', source: 'favorites'},
-            success: function(result) {
-                $('.result').html(result);
-            },
-            error: function(request, status, error) {
-                $('.result').html(request.responseText);
-            }
-        });
-        return false;
+      $.ajax({
+        type: 'POST',
+        url: '${request.route_url("create_feed", user=screen_name)}',
+        data: {name: 'favorites', source: 'favorites'},
+        success: function(result) {
+            $('.result').html(result);
+        },
+        error: function(request, status, error) {
+            $('.result').html(request.responseText);
+        }
+      });
+      return false;
     });
   </script>
 </body>
 </html>
+<!-- vim: set et ts=2 sw=2 sts=2: -->

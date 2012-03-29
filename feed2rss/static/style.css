@@ -1,0 +1,10 @@
+#header {
+    width: 600px;
+    height: 50px;
+}
+
+.wrapper {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}

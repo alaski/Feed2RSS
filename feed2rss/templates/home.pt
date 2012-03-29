@@ -9,20 +9,20 @@
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
-  <div class="middle align-center">
-    <p class="app-welcome">
-    Welcome to <span class="app-name">${project}</span>.<br/>
-    This is a service which converts Twitter timelines or favorited Tweets into an RSS feed.  This started as a way for me to mark Tweets which contained links to articles that I wanted to read later, when I was at a monitor and not on my phone.  It currently operates by checking Twitter every hour for updates.
-    </p>
-    <p tal:condition="logged_in">
-      <a href="${request.route_url('user_home', user=logged_in)}">Feed</a>
-    </p>
-    <p tal:switch="logged_in is None">
-      <a tal:case="True" href="${request.route_url('twitter_login')}">
+  <div id="header">
+  </div>
+  <div class="wrapper">
+    <div class="welcome">
+    Welcome to <span class="app-name">${project}</span>.<br/> This is a service which converts Twitter timelines or favorited Tweets into an RSS feed.  This started as a way for me to mark Tweets which contained links to articles that I wanted to read later, when I was at a monitor and not on my phone.  It currently operates by checking Twitter every hour for updates.
+    </div>
+      <a tal:condition="logged_in is None" href="${request.route_url('twitter_login')}">
         <img src="${request.static_url('feed2rss:static/sign-in-with-twitter-l.png')}" />
       </a>
-      <a tal:case="False" href="${request.route_url('logout')}">Log out</a>
-    </p>
   </div>
+  <p tal:condition="logged_in">
+    <a href="${request.route_url('user_home', user=logged_in)}">Feed</a>
+    <a href="${request.route_url('logout')}">Log out</a>
+  </p>
 </body>
 </html>
+<!-- vim: set et ts=2 sw=2 sts=2: -->
