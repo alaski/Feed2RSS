@@ -78,6 +78,12 @@ def twitter_authenticated(request):
                 oauth_token,
                 oauth_token_secret
                 )
+        DBSession.add(user)
+        user = User.get_by_screen_name(tw_user.screen_name)
+        favorites_feed = Feed(user.id, 'favorites', 'favorites', False)
+        timeline_feed = Feed(user.id, 'timeline', 'timeline', False)
+        DBSession.add(favorites_feed)
+        DBSession.add(timeline_feed)
     else:
         if user.oauth_token != oauth_token:
             user.oauth_token = oauth_token
@@ -98,20 +104,23 @@ def user_home(request):
         return HTTPForbidden()
     
     user = User.get_by_screen_name(user_name)
-    feeds = Feed.get_by_userid(user.id)
-    feed_links = []
-    if feeds is not None:
-        for feed in feeds:
-            feed_links.append(
-                    request.route_url(
-                        'view_feed',
-                        user = user_name,
-                        feedname = feed.name,
-                        )
+    feeds_cursor = Feed.get_by_userid(user.id)
+    feeds = []
+    if feeds_cursor is not None:
+        for feed in feeds_cursor:
+            feed_url = request.route_url(
+                    'view_feed',
+                    user = user_name,
+                    feedname = feed.name,
                     )
+            feeds.append({
+                        'type': feed.source,
+                        'url': feed_url,
+                        'active': feed.active
+                        })
 
     return {'screen_name': user_name,
-            'feed_links': feed_links,}
+            'feeds': feeds,}
 
 @view_config(route_name='view_feed')
 def view_feed(request):

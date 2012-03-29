@@ -14,14 +14,14 @@
 <body>
     <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
   <div class="middle align-center">
-      <div tal:repeat="feed_link feed_links">
-          <a href="${feed_link}">${feed_link}</a>
+      <div tal:repeat="feed feeds">
+          <a href="${feed['url']}">${feed['type']}</a>
       </div>
-      <form id="add_feed">
-          <input type="hidden" name="name" value="favorites" />
-          <input type="hidden" name="source" value="favorites" />
-          <input type="submit" value="Add Feed" />
-      </form>
+      <div id="add-feed-form" title="Add feed">
+          <form>
+              <input type="" name="source" value="favorites" />
+          </form>
+      </div>
       <div class="result">
       </div>
   </div>

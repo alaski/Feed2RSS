@@ -6,6 +6,7 @@ from pyramid.security import (
     )
 
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     Integer,
@@ -33,15 +34,18 @@ class Feed(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     name = Column(String(255))
     source = Column(String(255))
+    active = Column(Boolean, default=False)
 
     def __init__(self,
                  user_id,
                  name,
-                 source
+                 source,
+                 active = False
                  ):
         self.user_id = user_id
         self.name = name,
         self.source = source
+        self.active = active
 
     @classmethod
     def get_by_userid(cls, user_id):
