@@ -5,17 +5,27 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
   <meta name="keywords" content="" />
   <meta name="description" content="" />
-  <link rel="shortcut icon" href="${request.static_url('feed2rss:static/favicon.ico')}" />
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
   <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
-  <div class="middle align-center">
-    <ul>
-      <li tal:repeat="feed feeds">
-        ${feed['type']}<a href="${feed.url}">RSS</a>
-      </li>
-    </ul>
+  <div id="container">
+    <div id="header">
+      <div class="float-left">
+        <a href="${request.route_url('home')}">Feed2RSS</a>
+      </div>
+      <div tal:condition="logged_in" class="float-right">
+        <a href="${request.route_url('user_home', user=logged_in)}">${logged_in}</a>
+        <a href="${request.route_url('logout')}">Log out</a>
+      </div>
+    </div>
+    <div id="feeds">
+      <ul>
+        <li tal:repeat="feed feeds">
+          ${feed['type']}<a href="${feed.url}">RSS</a>
+        </li>
+      </ul>
+    </div>
   </div>
   <script>
     $('#add_feed').submit(function() {

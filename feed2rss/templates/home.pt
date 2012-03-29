@@ -5,24 +5,30 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
   <meta name="keywords" content="" />
   <meta name="description" content="" />
-  <link rel="shortcut icon" href="${request.static_url('feed2rss:static/favicon.ico')}" />
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
-  <div id="header">
-  </div>
-  <div class="wrapper">
-    <div class="welcome">
-    Welcome to <span class="app-name">${project}</span>.<br/> This is a service which converts Twitter timelines or favorited Tweets into an RSS feed.  This started as a way for me to mark Tweets which contained links to articles that I wanted to read later, when I was at a monitor and not on my phone.  It currently operates by checking Twitter every hour for updates.
+  <div id="container">
+    <div id="header">
+      <div class="float-left">
+        <a href="${request.route_url('home')}">Feed2RSS</a>
+      </div>
+      <div tal:condition="logged_in" class="float-right">
+        <a href="${request.route_url('user_home', user=logged_in)}">${logged_in}</a>
+        <a href="${request.route_url('logout')}">Log out</a>
+      </div>
+      <div tal:condition="logged_in is None" class="float-right">
+        <a href="${request.route_url('twitter_login')}">
+          <img src="${request.static_url('feed2rss:static/sign-in-with-twitter-l.png')}" />
+        </a>
+      </div>
     </div>
-      <a tal:condition="logged_in is None" href="${request.route_url('twitter_login')}">
-        <img src="${request.static_url('feed2rss:static/sign-in-with-twitter-l.png')}" />
-      </a>
+    <div id="about">
+      <h2>Welcome to Feed2RSS.</h2> 
+      <p>This is a service which converts Twitter timelines or favorited Tweets into an RSS feed.  This started as a way for me to mark Tweets which contained links to articles that I wanted to read later, when I was at a monitor and not on my phone.  It currently operates by checking Twitter every hour for updates.
+      <p>
+    </div>
   </div>
-  <p tal:condition="logged_in">
-    <a href="${request.route_url('user_home', user=logged_in)}">Feed</a>
-    <a href="${request.route_url('logout')}">Log out</a>
-  </p>
 </body>
 </html>
 <!-- vim: set et ts=2 sw=2 sts=2: -->

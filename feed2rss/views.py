@@ -120,7 +120,9 @@ def user_home(request):
                         })
 
     return {'screen_name': user_name,
-            'feeds': feeds,}
+            'feeds': feeds,
+            'logged_in': authenticated_userid(request),
+            }
 
 @view_config(route_name='view_feed')
 def view_feed(request):
