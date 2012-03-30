@@ -1,4 +1,7 @@
 import datetime
+import random
+import string
+
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPForbidden,
@@ -80,10 +83,10 @@ def twitter_authenticated(request):
                 )
         DBSession.add(user)
         user = User.get_by_screen_name(tw_user.screen_name)
-        favorites_feed = Feed(user.id, 'favorites', 'favorites', False)
-        timeline_feed = Feed(user.id, 'timeline', 'timeline', False)
-        DBSession.add(favorites_feed)
-        DBSession.add(timeline_feed)
+        random_name = ''.join(
+                random.choice(string.ascii_lowercase + string.digits) for x in range(10))
+        feed = Feed(user.id, random_name, 'favorites')
+        DBSession.add(feed)
     else:
         if user.oauth_token != oauth_token:
             user.oauth_token = oauth_token
@@ -114,9 +117,7 @@ def user_home(request):
                     feedname = feed.name,
                     )
             feeds.append({
-                        'type': feed.source,
                         'url': feed_url,
-                        'active': feed.active
                         })
 
     return {'screen_name': user_name,

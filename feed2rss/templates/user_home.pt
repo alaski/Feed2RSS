@@ -22,27 +22,11 @@
     <div id="feeds">
       <ul>
         <li tal:repeat="feed feeds">
-          ${feed['type']}<a href="${feed.url}">RSS</a>
+          <a href="${feed.url}">RSS</a>
         </li>
       </ul>
     </div>
   </div>
-  <script>
-    $('#add_feed').submit(function() {
-      $.ajax({
-        type: 'POST',
-        url: '${request.route_url("create_feed", user=screen_name)}',
-        data: {name: 'favorites', source: 'favorites'},
-        success: function(result) {
-            $('.result').html(result);
-        },
-        error: function(request, status, error) {
-            $('.result').html(request.responseText);
-        }
-      });
-      return false;
-    });
-  </script>
 </body>
 </html>
 <!-- vim: set et ts=2 sw=2 sts=2: -->

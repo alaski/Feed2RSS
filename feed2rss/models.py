@@ -6,7 +6,6 @@ from pyramid.security import (
     )
 
 from sqlalchemy import (
-    Boolean,
     Column,
     DateTime,
     Integer,
@@ -33,19 +32,17 @@ class Feed(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     name = Column(String(255))
-    source = Column(String(255))
-    active = Column(Boolean, default=False)
+    source = Column(String(255)) # timeline, favorites. Next: lists
+    last_updated = Column(DateTime)
 
     def __init__(self,
                  user_id,
                  name,
                  source,
-                 active = False
                  ):
         self.user_id = user_id
         self.name = name,
         self.source = source
-        self.active = active
 
     @classmethod
     def get_by_userid(cls, user_id):
@@ -66,7 +63,8 @@ class Feed(Base):
     def __str__(self):
         return ('<Feed user_id: {user_id} '
                 'name: {name} '
-                'source: {source}>').format(
+                'source: {source} '
+                'last updated: {last_updated}>').format(
                         **self.__dict__)
 
 class User(Base):

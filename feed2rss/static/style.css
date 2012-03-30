@@ -3,6 +3,12 @@ body {
     padding: 0;
 }
 
+li {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
 #container {
     border-style: solid;
     border-width: thin;
@@ -14,6 +20,14 @@ body {
 
 #header {
     height: 50px;
+}
+
+.enabled-false {
+
+}
+
+.enabled-true {
+
 }
 
 .float-right {

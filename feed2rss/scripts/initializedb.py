@@ -28,7 +28,7 @@ def main(argv=sys.argv):
     database_url = os.environ.get('DATABASE_URL')
     engine = create_engine(database_url)
     DBSession.configure(bind=engine)
-    #Base.metadata.drop_all(engine)
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     #with transaction.manager:
     #    model = User()
