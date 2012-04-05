@@ -39,7 +39,8 @@ def main(argv=None):
         auth.set_access_token(user.oauth_token, user.oauth_token_secret)
         api = tweepy.API(auth)
         for tweet in api.favorites():
-            link_match = link_re.search(tweet.text)
+            tweet_text = unicode(tweet.text).encode('utf-8')
+            link_match = link_re.search(tweet_text)
             if link_match is not None:
                 link = unicode(link_match.group(0)).encode('utf-8')
                 tweet_persist = {
@@ -49,7 +50,7 @@ def main(argv=None):
                         'title': link,
                         'author': tweet.user.screen_name,
                         'link': link,
-                        'description': '<![CDATA[ {0} ]]>'.format(tweet.text),
+                        'description': '<![CDATA[ {0} ]]>'.format(tweet_text),
                         'pubDate': tweet.created_at
                         }
                 mongo_tweets.insert(tweet_persist)
