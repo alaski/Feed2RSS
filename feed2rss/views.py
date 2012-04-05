@@ -104,7 +104,7 @@ def user_home(request):
     user_name = request.matchdict['user']
     logged_in = authenticated_userid(request)
     if user_name != logged_in:
-        return HTTPForbidden()
+        return HTTPFound(location = request.route_url('home'))
     
     user = User.get_by_screen_name(user_name)
     feeds_cursor = Feed.get_by_userid(user.id)
@@ -122,7 +122,7 @@ def user_home(request):
 
     return {'screen_name': user_name,
             'feeds': feeds,
-            'logged_in': authenticated_userid(request),
+            'logged_in': logged_in,
             }
 
 @view_config(route_name='view_feed')
