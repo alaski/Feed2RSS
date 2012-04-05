@@ -1,3 +1,14 @@
 #!/bin/bash
+
+trap : SIGTERM
+
 python setup.py develop
-python runapp.py
+python runapp.py &
+APP_PID=$!
+
+wait $APP_PID
+
+if [[ $? -gt 128 ]]
+then
+    kill $APP_PID
+fi
