@@ -45,6 +45,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.include('pyramid_assetviews')
     config.add_asset_views('feed2rss:static', 'robots.txt', http_cache=3600)
+    config.add_asset_views('feed2rss:static', 'favicon.ico', http_cache=3600)
     config.add_route('home', '/')
     config.add_route('twitter_login', '/twitter_login')
     config.add_route('twitter_authenticated', '/twitter_authenticated')
