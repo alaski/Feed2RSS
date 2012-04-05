@@ -49,7 +49,7 @@ def main(argv=None):
                         'title': link,
                         'author': tweet.user.screen_name,
                         'link': link,
-                        'description': tweet.text,
+                        'description': '<![CDATA[ {0} ]]>'.format(tweet.text),
                         'pubDate': tweet.created_at
                         }
                 mongo_tweets.insert(tweet_persist)
