@@ -8,10 +8,34 @@
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
   <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
   <script type="text/javascript">
-    jQuery(document).ready(function() {
-      jQuery(".content").hide();
-      jQuery(".heading").click(function() {
-        jQuery(this).next(".content").slideToggle(500);
+    $(document).ready(function() {
+      $(".content").hide();
+      $(".heading").click(function() {
+        $(this).next(".content").slideToggle(500);
+      });
+
+      $("#submit_btn").click(function() {
+        //process here
+        var sources = $("input[name=feed_source]:checked").map(function() {
+          return $(this).val();
+        }).get().join();
+        var filter_links = $("input[name=filter_links]:checked").val();
+
+        var dataString = 'sources='+sources+'&filter_links='+filter_links;
+        alert(dataString); return false;
+        $.ajax( {
+          type: "POST",
+          url: "${request.route_url('create_feed', user=logged_in)}",
+          data: "",
+          success: function() {
+            $(".content").slideToggle(500);
+            $("#feeds ul").append(
+              $("<li>").append(
+                $("<a>").attr("href", "${request.route_url('user_home', user=logged_in)}").append("Feed")
+                ));
+          }
+        });
+        return false;
       });
     });
   </script>
@@ -38,11 +62,12 @@
     <div id="create_feed" class="content">
       <form>
         Source:<br/>
-        <input type="checkbox" name="feed_source" value="fav"/>Favorites<br/>
-        <input type="checkbox" name="feed_source" value="tline"/>Timeline<br/>
+        <input type="checkbox" name="feed_source" id="favoritesq" value="fav"/>Favorites<br/>
+        <input type="checkbox" name="feed_source" id="timelineq" value="tline"/>Timeline<br/>
         Include:<br/>
-        <input type="radio" name="filter_links" value="true"/>Only tweets with links?<br/>
-        <input type="radio" name="filter_links" value="false" checked="checked"/>All<br/>
+        <input type="radio" name="filter_links" id="linksq" value="true"/>Only tweets with links?<br/>
+        <input type="radio" name="filter_links" id="allq"  value="false" checked="checked"/>All<br/>
+        <input type="submit" id="submit_btn" value="Create"/>
       </form>
     </div>
   </div>
