@@ -83,10 +83,6 @@ def twitter_authenticated(request):
                 )
         DBSession.add(user)
         user = User.get_by_screen_name(tw_user.screen_name)
-        random_name = ''.join(
-                random.choice(string.ascii_lowercase + string.digits) for x in range(10))
-        feed = Feed(user.id, random_name, 'favorites')
-        DBSession.add(feed)
     else:
         if user.oauth_token != oauth_token:
             user.oauth_token = oauth_token
@@ -125,10 +121,42 @@ def user_home(request):
             'logged_in': logged_in,
             }
 
+@view_config(route_name='get_feeds', renderer='json')
+def get_feeds(request):
+    user_name = request.matchdict['user']
+    logged_in = authenticated_userid(request)
+    if user_name != logged_in:
+        return HTTPForbidden()
+
+    user = User.get_by_screen_name(user_name)
+    feeds = Feed.get_by_userid(user.id)
+    
+    feed_list = []
+    for feed in feeds:
+        feed_dict = {
+                'name': feed.name,
+                'feed_uri': request.route_url(
+                    'view_feed',
+                    user = user_name,
+                    feedname = feed.name
+                    ),
+                'delete_uri': request.route_url(
+                    'delete_feed',
+                    user=user_name,
+                    feedname=feed.name
+                    )
+                }
+        feed_list.append(feed_dict)
+
+    return feed_list
+
 @view_config(route_name='view_feed')
 def view_feed(request):
     user = User.get_by_screen_name(request.matchdict['user'])
-    feed = Feed.get_by_id_and_name(user.id, request.matchdict['feedname'])
+    if user is None:
+        return HTTPNotFound()
+
+    feed = Feed.get_by_userid_and_name(user.id, request.matchdict['feedname'])
     if feed is None:
         return HTTPNotFound()
 
@@ -171,9 +199,20 @@ def create_feed(request):
 
     form_data = request.POST
 
+    feed_sources = form_data['sources'].split(',')
+    #filter_links = form_data['filter_links']
+
     user = User.get_by_screen_name(user_name)
-    feed = Feed(user.id, form_data['name'], form_data['source'])
-    DBSession.add(feed)
+
+    for source in feed_sources:
+        feedq = Feed.get_by_userid_and_source(user.id, source)
+        if feedq is None:
+            random_name = ''.join(
+                    random.choice(
+                        string.ascii_lowercase + string.digits) for x in range(10)
+                    )
+            feed = Feed(user.id, random_name, source)
+            DBSession.add(feed)
     #settings = request.registry.settings
     #auth = tweepy.OAuthHandler(
     #        settings['twconsumer_key'],
@@ -182,6 +221,20 @@ def create_feed(request):
     #auth.set_access_token(user.oauth_token, user.oauth_token_secret)
     #api = tweepy.API(auth)
     #api.favorites()
+    return Response()
+
+@view_config(route_name='delete_feed', request_method='DELETE')
+def delete_feed(request):
+    user_name = request.matchdict['user']
+    logged_in = authenticated_userid(request)
+    if user_name != logged_in:
+        return HTTPForbidden()
+
+    user = User.get_by_screen_name(user_name)
+    feed = Feed.get_by_userid_and_name(user.id, request.matchdict['feedname'])
+    if feed is not None:
+        DBSession.delete(feed)
+
     return Response()
 
 @view_config(route_name='home', renderer='templates/home.pt')

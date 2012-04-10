@@ -6,7 +6,7 @@
   <meta name="keywords" content="" />
   <meta name="description" content="" />
   <link rel="stylesheet" href="${request.static_url('feed2rss:static/style.css')}" type="text/css" media="screen" charset="utf-8" />
-  <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.1.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('feed2rss:static/jquery-1.7.2.js')}"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $(".content").hide();
@@ -14,25 +14,36 @@
         $(this).next(".content").slideToggle(500);
       });
 
+      $.ajax( {
+        type: "GET",
+        url: "${request.route_url('get_feeds', user=logged_in)}",
+        success: function(data) {
+          $.each(data, function(index, value) {
+            var feed = '<li><a href="' + value['feed_uri'] + '">' + 
+            value['name'] + '</a>' +
+            '    <a href="' + value['delete_uri'] + '">Delete</a>' + 
+            '</li>';
+            //TODO Delete needs an onclick event to send a DELETE
+
+            $("#feeds ul").append(feed);
+          });
+        }
+      });
+
+
       $("#submit_btn").click(function() {
-        //process here
         var sources = $("input[name=feed_source]:checked").map(function() {
           return $(this).val();
         }).get().join();
         var filter_links = $("input[name=filter_links]:checked").val();
 
-        var dataString = 'sources='+sources+'&filter_links='+filter_links;
-        alert(dataString); return false;
         $.ajax( {
           type: "POST",
           url: "${request.route_url('create_feed', user=logged_in)}",
-          data: "",
+          data: {'sources': sources, 'filter_links': filter_links },
           success: function() {
             $(".content").slideToggle(500);
-            $("#feeds ul").append(
-              $("<li>").append(
-                $("<a>").attr("href", "${request.route_url('user_home', user=logged_in)}").append("Feed")
-                ));
+            //TODO use js to load feeds, trigger reload
           }
         });
         return false;
@@ -53,9 +64,6 @@
     </div>
     <div id="feeds">
       <ul>
-        <li tal:repeat="feed feeds">
-          <a href="${feed.url}">RSS</a>
-        </li>
       </ul>
     </div>
     <p class="heading">Create feed</p>

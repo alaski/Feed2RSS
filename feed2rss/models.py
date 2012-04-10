@@ -32,7 +32,7 @@ class Feed(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     name = Column(String(255))
-    source = Column(String(255)) # timeline, favorites. Next: lists
+    source = Column(String(255)) # tline, fav. Next: lists
     last_updated = Column(DateTime)
 
     def __init__(self,
@@ -53,9 +53,17 @@ class Feed(Base):
         return feeds
 
     @classmethod
-    def get_by_id_and_name(cls, user_id, name):
+    def get_by_userid_and_name(cls, user_id, name):
         try:
             feed = DBSession.query(cls).filter_by(user_id=user_id, name=name).one()
+        except NoResultFound:
+            return None
+        return feed
+
+    @classmethod
+    def get_by_userid_and_source(cls, user_id, source):
+        try:
+            feed = DBSession.query(cls).filter_by(user_id=user_id, source=source).one()
         except NoResultFound:
             return None
         return feed

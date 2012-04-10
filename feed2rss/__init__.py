@@ -51,8 +51,10 @@ def main(global_config, **settings):
     config.add_route('twitter_authenticated', '/twitter_authenticated')
     config.add_route('logout', '/logout')
     config.add_route('user_home', '/users/{user}')
-    config.add_route('create_feed', '/users/{user}/feeds')
+    config.add_route('create_feed', '/users/{user}/feeds', request_method='POST')
+    config.add_route('get_feeds', '/users/{user}/feeds', request_method='GET')
     config.add_route('view_feed', '/users/{user}/feeds/{feedname}.rss')
+    config.add_route('delete_feed', '/users/{user}/feeds/{feedname}.rss')
     config.scan()
     return config.make_wsgi_app()
 
