@@ -12,10 +12,11 @@ from feed2rss.models import (
     User,
     )
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
-        
+
     link_re = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
     database_url = os.environ.get('DATABASE_URL')
@@ -57,7 +58,7 @@ def main(argv=None):
     #db.tweets.ensureIndex({tweet_id:1, rss_user:1, feedname:1},{unique:true})
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     sys.exit(main())
 
 # vim:et:ts=4:sw=4:sts=4
