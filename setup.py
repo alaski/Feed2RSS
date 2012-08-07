@@ -24,7 +24,7 @@ requires = [
 setup(name='feed2rss',
       version='0.1',
       description='feed2rss',
-      long_description=README + '\n\n' +  CHANGES,
+      long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",
@@ -47,4 +47,3 @@ setup(name='feed2rss',
       initialize_feed2rss_db = feed2rss.scripts.initializedb:main
       """,
       )
-
