@@ -39,22 +39,26 @@ def main(argv=None):
         auth = tweepy.OAuthHandler(twconsumer_key, twconsumer_secret)
         auth.set_access_token(user.oauth_token, user.oauth_token_secret)
         api = tweepy.API(auth)
-        for tweet in api.favorites():
-            tweet_text = unicode(tweet.text).encode('utf-8')
-            link_match = link_re.search(tweet_text)
-            if link_match is not None:
-                link = unicode(link_match.group(0)).encode('utf-8')
-                tweet_persist = {
-                        'rss_user': rss_username,
-                        'feedname': feed.name,
-                        'tweet_id': tweet.id_str,
-                        'title': link,
-                        'author': tweet.user.screen_name,
-                        'link': link,
-                        'description': '{0}'.format(tweet_text),
-                        'pubDate': tweet.created_at
-                        }
-                mongo_tweets.insert(tweet_persist)
+        try:
+            for tweet in api.favorites():
+                tweet_text = unicode(tweet.text).encode('utf-8')
+                link_match = link_re.search(tweet_text)
+                if link_match is not None:
+                    link = unicode(link_match.group(0)).encode('utf-8')
+                    tweet_persist = {
+                            'rss_user': rss_username,
+                            'feedname': feed.name,
+                            'tweet_id': tweet.id_str,
+                            'title': link,
+                            'author': tweet.user.screen_name,
+                            'link': link,
+                            'description': '{0}'.format(tweet_text),
+                            'pubDate': tweet.created_at
+                            }
+                    mongo_tweets.insert(tweet_persist)
+        except tweepy.error.TweepError:
+            # Most likely failed auth, needs better handling
+            pass
     #db.tweets.ensureIndex({tweet_id:1, rss_user:1, feedname:1},{unique:true})
 
 
