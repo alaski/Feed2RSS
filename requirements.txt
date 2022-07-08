@@ -8,7 +8,7 @@ SQLAlchemy==0.7.6
 WebOb==1.2b3
 ordereddict==1.1
 psycopg2==2.4.4
-pymongo==2.1.1
+pymongo==2.5.2
 pyramid==1.3b3
 pyramid-assetviews==1.0a3
 pyramid-debugtoolbar==1.0
